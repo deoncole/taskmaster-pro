@@ -70,7 +70,7 @@ $(".list-group").on("blur", "textarea", function(){
       .attr("id")
       .replace("list-", "");
     
-    // get the task's position in teh list of other li elements
+    // get the task's position in the list of other li elements
     var index = $(this)
       .closest(".list-group-item")
       .index();
