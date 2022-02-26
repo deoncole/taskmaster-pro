@@ -105,7 +105,7 @@ $(".list-group").on("click", "span", function(){
 
   // enable jquery ui datepicker
   dateInput.datepicker({
-    minDate: 1,
+    minDate: 0,
     onClose: function(){
       //when calendar is closed, force a "change" event on teh 'dateInput'
       $(this).trigger("change");
@@ -164,7 +164,7 @@ $("#task-form-modal").on("shown.bs.modal", function() {
 });
 
 // save button in modal was clicked
-$("#task-form-modal .btn-primary").click(function() {
+$("#task-form-modal .btn-save").click(function() {
   // get form values
   var taskText = $("#modalTaskDescription").val();
   var taskDate = $("#modalDueDate").val();
@@ -201,15 +201,23 @@ $(".card .list-group").sortable({
   helper: "clone",
   activate: function(event) {
     console.log("activate", this);
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
   },
   deactivate: function(event) {
     console.log("deactivate", this);
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
   over: function(event) {
     console.log("over", this);
+    $(event.target).addClass("dropover-active");
+    
   },
   out: function(event) {
     console.log("out", event.target);
+    $(event.target).removeClass("dropover-active");
+    
   },
   update: function(event) {
 
@@ -251,17 +259,20 @@ $("#trash").droppable({
   drop: function(event, ui) {
     console.log("drop");
     ui.draggable.remove();
+    $(".bottom-trash").removeClass("bottom-trash-active");
   },
   over: function(event, ui) {
     console.log("over");
+    $(".bottom-trash").addClass("bottom-trash-active");
   },
   out: function(event, ui){
     console.log("out");
+    $(".bottom-trash").removeClass("bottom-trash-active");
   }
 });
 
 $("#modalDueDate").datepicker({
-  minDate: 1
+  minDate: 0
 });
 
 var auditTask = function(taskEl){
@@ -282,6 +293,13 @@ var auditTask = function(taskEl){
     $(taskEl).addClass("list-group-item-warning");
   }
 };
+
+setInterval(function () {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, 1800000);
+
 // load tasks for the first time
 loadTasks();
 
